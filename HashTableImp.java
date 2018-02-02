@@ -20,8 +20,8 @@ class HashTableImp implements HashTable {
     }
 
     public int search(String key) {
+        return this.bucketArray[genarateHash(key)].wordList.search(key);
 
-        return this.bucketArray[genarateHash(key)].getWordCountFromBucket(key);
     }
 
     public void printInfo() {
@@ -42,79 +42,118 @@ class HashTableImp implements HashTable {
     }
 
     public int genarateHash(String word) {
-        int hash = 0;
+        int hash = 7;
         for (int i = 0; i < word.length(); i++) {
-            hash += word.charAt(i);
+            hash = hash * 31 % this.bucketSize + word.charAt(i);
         }
 
-        return word.length() * hash % this.bucketSize;
+        return hash % this.bucketSize;
     }
 
 }// end HashTableImp 
 
 
 class Bucket {
-    MyList words = new MyList();
+
+    ListLinked wordList = new ListLinked();
 
     static int maxTableLength = 0;
     public int bucketSize = 0;
     static int totWord = 0;
 
     public void addWordToBucket(String word) {
-        if (maxTableLength < this.words.size()) {
+        if (maxTableLength < this.wordList.getWordTypes()) {
             maxTableLength++;
 
         }
-        words.add(word);
+        wordList.add(word);
         totWord++;
-        this.bucketSize++;
+        this.bucketSize = this.wordList.getWordTypes();
     }
 
     public Bucket() {
 
     }
 
-    public int getWordCountFromBucket(String word) {
+
+}
+
+
+class ListLinked {
+    Obj head = new Obj();
+    Obj tmp = head;
+
+    public void add(String word) {
+        Obj tmp = this.head;
+        while (tmp.add(word) == false) {
+            tmp = tmp.next;
+        }
+    }
+
+    public int search(String word) {
+        Obj tmp = this.head;
+        while (tmp.get(word) == 0) {
+            tmp = tmp.next;
+        }
+        return tmp.count;
+    }
+
+    public int getWordTypes() {
+        Obj tmp = this.head;
         int count = 0;
-        System.out.println("Max Size:" + maxTableLength + "  Total Word Count:" + totWord + " sqrt:" + Math.sqrt(totWord));
-        for (int i = 0; i < words.size(); i++) {
-
-            if (words.get(i).equals(word)) {
-
-                count++;
-            } else {
-            }
+        while (tmp.next != null) {
+            tmp = tmp.next;
+            count++;
         }
         return count;
     }
+
 }
 
-class MyList {
-    private String[] dataArray = new String[20];
-    private int endSize = 0;
 
-    public MyList() {
+class Obj {
+    int wordCount = 0;
+    int count = 0;
+    String word = "";
+    Obj next = null;
+
+    public void Obj() {
 
     }
 
-    public void add(String word) {
-        if (endSize == dataArray.length) {
-            String[] tmpArray = dataArray;
-            dataArray = new String[endSize + 20];
-            for (int i = 0; i < tmpArray.length; i++) {
-                dataArray[i] = tmpArray[i];
-            }
+    public boolean add(String word) {
+
+        if (this.word.equals("")) {
+            this.next = new Obj();
+            this.word = word;
+            this.count++;
+            //wordCount++;
+
         }
-        dataArray[endSize] = word;
-        endSize++;
 
+        if (this.word.equals(word)) {
+            if (this.next == null) {
+                this.next = new Obj();
+                this.next.word = word;
+
+            }
+            this.count++;
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    public int size(){
-        return endSize;
+    public int get(String word) {
+        if (this.word.equals(word)) {
+            if (this.next == null) {
+                return 0;
+            }
+            return count;
+        } else {
+            return 0;
+        }
     }
 
-    public String get(int index) {
-        return dataArray[index];
-    }
+
 }
