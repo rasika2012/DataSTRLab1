@@ -37,18 +37,18 @@ class HashTableImp implements HashTable {
         for (int i = 0; i < buckets; i++) {
             this.bucketArray[i] = new Bucket();
         }
-
-
     }
 
     public int genarateHash(String word) {
         int hash = 7;
         for (int i = 0; i < word.length(); i++) {
-            hash = hash * 31 % this.bucketSize + word.charAt(i);
+            hash =hash*31% this.bucketSize+ word.charAt(i);
         }
 
         return hash % this.bucketSize;
     }
+
+
 
 }// end HashTableImp 
 
@@ -56,7 +56,6 @@ class HashTableImp implements HashTable {
 class Bucket {
 
     ListLinked wordList = new ListLinked();
-
     static int maxTableLength = 0;
     public int bucketSize = 0;
     static int totWord = 0;
@@ -78,7 +77,6 @@ class Bucket {
 
 }
 
-
 class ListLinked {
     Obj head = new Obj();
     Obj tmp = head;
@@ -92,8 +90,16 @@ class ListLinked {
 
     public int search(String word) {
         Obj tmp = this.head;
-        while (tmp.get(word) == 0) {
+        if(word==""){
+            return 0;
+        }
+        while (tmp.get(word) == 0 || tmp!=null) {
+            if(tmp.next==null)return 0;
             tmp = tmp.next;
+        }
+
+        if (tmp.next==null){
+            return 0;
         }
         return tmp.count;
     }
@@ -145,7 +151,7 @@ class Obj {
     }
 
     public int get(String word) {
-        if (this.word.equals(word)) {
+        if (this.word.equals(word) || !word.equals("")) {
             if (this.next == null) {
                 return 0;
             }

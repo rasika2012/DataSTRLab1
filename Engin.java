@@ -22,7 +22,7 @@ public class Engin {
     /**
      * @param args the command line arguments
      */
-    static HashTableImp map = new HashTableImp(10);
+    static HashTableImp map = new HashTableImp(30);
 
     public static void main(String[] args) throws IOException {
 
